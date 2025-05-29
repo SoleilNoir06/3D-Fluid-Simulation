@@ -8,7 +8,7 @@ namespace _3D_Fluid_simulation.code.entities
     {        
         public Vector3 Position;
         public Vector3 Velocity;
-        public float Radius = 0.2f;
+        public float Radius = 0.1f;
 
         // Fluid properties
         public float Mass;
@@ -30,9 +30,6 @@ namespace _3D_Fluid_simulation.code.entities
 
         public void Update(BoundingBox box)
         {
-            float dt = GetFrameTime();
-            Console.WriteLine($"dt={dt}, pos={Position}, vel={Velocity}");
-
             // Gravity
             Velocity.Y -= 9.81f * GetFrameTime();
 
@@ -42,18 +39,51 @@ namespace _3D_Fluid_simulation.code.entities
             Position += Velocity * GetFrameTime();
 
             // Collision with bottom of container
-            if (Position.Y - Radius < box.Min.Y)
-            {
-                Position.Y = box.Min.Y + Radius;
-                Velocity.Y *= -0.5f;
-            }
+            ResolveContainerCollision(box); 
         }
 
         public void Draw()
         {
             Color color = ColorFromTemperature(Temperature);
-            Raylib.DrawSphere(Position, Radius, color);
+            DrawSphere(Position, Radius, color);
         }
+
+        public void ResolveContainerCollision(BoundingBox box)
+        {
+            float damping = 0.5f; // Bouncing factor
+
+            // X axis
+            if (Position.X - Radius < box.Min.X)
+            {
+                Position.X = box.Min.X + Radius;
+                Velocity.X *= -damping;
+            }
+            else if (Position.X + Radius > box.Max.X)
+            {
+                Position.X = box.Max.X - Radius;
+                Velocity.X *= -damping;
+            }
+
+            // Y axis (only floor, not roof)
+            if (Position.Y - Radius < box.Min.Y)
+            {
+                Position.Y = box.Min.Y + Radius;
+                Velocity.Y *= -damping;
+            }
+
+            // Z axis
+            if (Position.Z - Radius < box.Min.Z)
+            {
+                Position.Z = box.Min.Z + Radius;
+                Velocity.Z *= -damping;
+            }
+            else if (Position.Z + Radius > box.Max.Z)
+            {
+                Position.Z = box.Max.Z - Radius;
+                Velocity.Z *= -damping;
+            }
+        }
+
 
         private Color ColorFromTemperature(float temp)
         {

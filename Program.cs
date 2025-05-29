@@ -3,6 +3,7 @@ using static Raylib_cs.Raylib;
 using System.Numerics;
 using _3D_Fluid_simulation.code.management;
 using _3D_Fluid_simulation.code.initialisation;
+using _3D_Fluid_simulation.code.entities;
 
 class Program
 {
@@ -11,7 +12,7 @@ class Program
         Window.Initialize();
 
         CameraController camera = new CameraController(new Vector3(10.0f, 10.0f, 10.0f), Vector3.Zero);
-        FluidContainer container = new FluidContainer(new Vector3(-3, 0, -3), new Vector3(3, 6, 3));
+        FluidContainer container = new FluidContainer(new Vector3(-3, 0, -3), new Vector3(3, 6, 6));
         ParticleSpawner spawner = new ParticleSpawner(container, 50);
         SimulationManager simulation = new SimulationManager(camera, container, spawner);
 
@@ -26,14 +27,14 @@ class Program
 
             BeginMode3D(camera.Camera);
 
-            DrawGrid(20, 1);
-            container.Draw();
+            DrawGrid(26, 1);
             spawner.DrawParticles();
+            container.Draw();
 
             EndMode3D();
 
-            DrawText("Clic gauche pour ajouter une particule dans le bac", 10, 10, 20, Color.LightGray);
-
+            DrawText($"Number of particles : {ParticleSpawner.ParticleCount}", 10, 50, 40, Color.White);
+            
             EndDrawing();
         }
 

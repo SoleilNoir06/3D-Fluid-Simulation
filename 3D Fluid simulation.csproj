@@ -9,11 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Raylib-cs" Version="7.0.1" />
+    <Compile Remove="assets\**" />
+    <EmbeddedResource Remove="assets\**" />
+    <None Remove="assets\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="assets\" />
+    <PackageReference Include="Raylib-cs" Version="7.0.1" />
   </ItemGroup>
 
 </Project>
